@@ -1,0 +1,22 @@
+{
+  "name": "borschphp/orm",
+  "description": "An Object Relational Model implementation.",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Alexandre DEBUSSCHÈRE",
+      "email": "zizilex@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "^7.2",
+    "borschphp/db": "0.1",
+    "laminas/laminas-hydrator": "^3.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Borsch\\": "src/"
+    }
+  }
+}
