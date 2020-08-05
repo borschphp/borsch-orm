@@ -136,7 +136,9 @@ class Model extends QueryBuilder
         $data = [];
         foreach ($columns as $property => $type) {
             // TODO Use $type to cast values to the appropriate type.
-            $data[$property] = $this->{$property} ?? null;
+            if (!in_array($property, ['created_at', 'updated_at']) || $this->{$property} !== null) {
+                $data[$property] = $this->{$property} ?? null;
+            }
         }
 
         return $data;
