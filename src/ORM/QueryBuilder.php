@@ -19,6 +19,7 @@ use Laminas\Db\Sql\Select;
 use Laminas\Db\Sql\Sql;
 use Laminas\Db\Sql\Update;
 use Laminas\Db\Sql\Where;
+use Laminas\Hydrator\ArraySerializableHydrator;
 use Laminas\Hydrator\ReflectionHydrator;
 use ReflectionClass;
 
@@ -76,7 +77,8 @@ class QueryBuilder
         $result = $this->sql->prepareStatementForSqlObject($this->task)->execute();
 
         if ($result instanceof ResultInterface && $result->isQueryResult()) {
-            $result_set = new HydratingResultSet(new ReflectionHydrator(), new static());
+            // $result_set = new HydratingResultSet(new ReflectionHydrator(), new static());
+            $result_set = new HydratingResultSet(new ArraySerializableHydrator(), new static());
             $result_set->initialize($result);
 
             return $result_set;
@@ -148,5 +150,18 @@ class QueryBuilder
         }
 
         return $last;
+    }
+
+    /**
+     * Used by ArraySerializableHydrator.
+     *
+     * @param array $data
+     * @return void
+     */
+    public function exchangeArray(array $data): void
+    {
+        foreach ($data as $property => $value) {
+            $this->{$property} = $value;
+        }
     }
 }

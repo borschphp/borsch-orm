@@ -8,6 +8,68 @@ Via [composer](https://getcomposer.org/) :
 
 `composer require borschphp/orm`
 
+## Integration in Borsch Framework
+
+Create a new file `config/database.php` file then add this content inside :
+
+```php
+use Borsch\Container\Container;
+use Borsch\Db\Db;
+use Laminas\Db\Adapter\AdapterInterface;
+
+/**
+ * Setup the database informations into the Borsch\Db\Db class.
+ * It will be used later to deal with models.
+ *
+ * @param Container $container
+ */
+return function (Container $container): void {
+    Db::addConnection($container->get(AdapterInterface::class), 'default');
+};
+```
+
+Open the file `config/container.php` then add your AdapterInterface (=database connection) definition.  
+Example _(we've set some values in .env before)_ :
+
+```php
+/*
+ * Database definitions
+ * --------------------
+ *
+ * Borsch uses the laminas-db package, please check it out for more information :
+ *     https://docs.laminas.dev/laminas-db/adapter/
+ * You can update the database information in the .env file.
+ */
+$container->set(AdapterInterface::class, function () {
+    return new Adapter([
+        'driver'   => env('DB_DRIVER'),
+        'database' => env('DB_NAME'),
+        'username' => env('DB_USER'),
+        'password' => env('DB_PWD'),
+        'hostname' => env('DB_HOST'),
+        'port' => env('DB_PORT'),
+        'charset' => env('DB_CHARSET'),
+        'driver_options' => [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false,
+            PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4 COLLATE utf8mb4_general_ci'
+        ]
+    ]);
+})->cache(true);
+```
+
+Open the file `public/index.php`, then load your database settings, below the container instance :
+
+```php
+/** @var ContainerInterface $container */
+$container = (require_once __DIR__.'/../config/container.php');
+
+(require_once __DIR__.'/../config/database.php')($container); // <-- Here
+```
+
+Done :tada: !
+
 ## Usage
 
 Create a class representing a table in your database which extends `Borsch\ORM\Model`.

@@ -11,7 +11,7 @@
   ],
   "require": {
     "php": "^7.2",
-    "borschphp/db": "0.1",
+    "borschphp/db": "~0.1",
     "laminas/laminas-hydrator": "^3.0"
   },
   "autoload": {
